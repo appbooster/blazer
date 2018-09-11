@@ -317,12 +317,18 @@ module Blazer
       end
 
       def csv_data(columns, rows, data_source)
-        CSV.generate do |csv|
+        CSV.generate(col_sep: ";") do |csv|
           csv << columns
           rows.each do |row|
-            csv << row.each_with_index.map { |v, i| v.is_a?(Time) ? blazer_time_value(data_source, columns[i], v) : v }
+            csv << row.each_with_index.map {|v, i| convert_to_csv_value(data_source, v, i)}
           end
         end
+      end
+
+      def convert_to_csv_value(data_source, value, row)
+        return blazer_time_value(data_source, columns[row], value) if value.is_a?(Time)
+        return value.to_s(:delimited, delimiter: '', separator: ',') if value.is_a?(BigDecimal) || value.is_a?(Float)
+        value
       end
 
       def blazer_time_value(data_source, k, v)
