@@ -325,8 +325,8 @@ module Blazer
         end
       end
 
-      def convert_to_csv_value(data_source, value, row)
-        return blazer_time_value(data_source, columns[row], value) if value.is_a?(Time)
+      def convert_to_csv_value(data_source, value, column_index)
+        return blazer_time_value(data_source, @columns[column_index], value) if value.is_a?(Time)
         return value.to_s(:delimited, delimiter: '', separator: ',') if value.is_a?(BigDecimal) || value.is_a?(Float)
         value
       end
