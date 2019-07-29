@@ -2,13 +2,9 @@ module Blazer
   class BaseController < ApplicationController
     # skip filters
     filters = _process_action_callbacks.map(&:filter) - [:activate_authlogic]
-    if Rails::VERSION::MAJOR >= 5
-      skip_before_action(*filters, raise: false)
-      skip_after_action(*filters, raise: false)
-      skip_around_action(*filters, raise: false)
-    else
-      skip_action_callback(*filters)
-    end
+    skip_before_action(*filters, raise: false)
+    skip_after_action(*filters, raise: false)
+    skip_around_action(*filters, raise: false)
 
     protect_from_forgery with: :exception
 
@@ -96,7 +92,7 @@ module Blazer
       helper_method :variable_params
 
       def blazer_user
-        send(Blazer.user_method) if Blazer.user_method && respond_to?(Blazer.user_method)
+        send(Blazer.user_method) if Blazer.user_method && respond_to?(Blazer.user_method, true)
       end
       helper_method :blazer_user
 
